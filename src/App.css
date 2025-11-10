@@ -207,6 +207,26 @@ h1 {
   box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
 }
 
+.todo-item.overdue {
+  background: linear-gradient(135deg, rgba(255, 235, 238, 0.95) 0%, rgba(255, 205, 210, 0.95) 100%);
+  border-color: #ef5350;
+  animation: pulseRed 2s ease-in-out infinite;
+}
+
+.todo-item.overdue:hover {
+  border-color: #d32f2f;
+  box-shadow: 0 8px 25px rgba(239, 83, 80, 0.4);
+}
+
+@keyframes pulseRed {
+  0%, 100% {
+    box-shadow: 0 4px 15px rgba(239, 83, 80, 0.2);
+  }
+  50% {
+    box-shadow: 0 4px 20px rgba(239, 83, 80, 0.4);
+  }
+}
+
 @keyframes slideInItem {
   0% {
     opacity: 0;

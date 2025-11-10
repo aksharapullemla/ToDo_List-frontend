@@ -14,6 +14,17 @@ function App() {
   const [editId, setEditId] = useState(null);
   const [editText, setEditText] = useState('');
 
+  const isOverdue = (todo) => {
+    if (todo.completed || !todo.dueDate) return false;
+    const now = new Date();
+    const due = new Date(todo.dueDate);
+    if (todo.dueTime) {
+      const [hours, minutes] = todo.dueTime.split(':');
+      due.setHours(hours, minutes);
+    }
+    return now > due;
+  };
+
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
@@ -33,9 +44,11 @@ function App() {
     }
   }, [isAuthenticated]);
 
+  const API_URL = process.env.REACT_APP_API_URL || '';
+
   const fetchTodos = async () => {
     const token = localStorage.getItem('token');
-    const res = await axios.get('/api/todos', {
+    const res = await axios.get(`${API_URL}/api/todos`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     setTodos(res.data);
@@ -44,7 +57,7 @@ function App() {
   const addTodo = async () => {
     if (input.trim()) {
       const token = localStorage.getItem('token');
-      await axios.post('/api/todos', { 
+      await axios.post(`${API_URL}/api/todos`, { 
         text: input,
         dueDate: dueDate || null,
         dueTime: dueTime || null
@@ -60,7 +73,7 @@ function App() {
 
   const updateTodo = async (id, updates) => {
     const token = localStorage.getItem('token');
-    await axios.put(`/api/todos/${id}`, updates, {
+    await axios.put(`${API_URL}/api/todos/${id}`, updates, {
       headers: { Authorization: `Bearer ${token}` }
     });
     fetchTodos();
@@ -68,7 +81,7 @@ function App() {
 
   const deleteTodo = async (id) => {
     const token = localStorage.getItem('token');
-    await axios.delete(`/api/todos/${id}`, {
+    await axios.delete(`${API_URL}/api/todos/${id}`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     fetchTodos();
@@ -137,7 +150,7 @@ function App() {
       </div>
       <ul className="todo-list">
         {todos.map((todo) => (
-          <li key={todo._id} className={`todo-item ${todo.completed ? 'completed' : ''}`}>
+          <li key={todo._id} className={`todo-item ${todo.completed ? 'completed' : ''} ${isOverdue(todo) ? 'overdue' : ''}`}>
             <input
               type="checkbox"
               checked={todo.completed}

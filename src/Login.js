@@ -9,10 +9,12 @@ function Login({ onLogin, onSwitchToSignup }) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
+  const API_URL = process.env.REACT_APP_API_URL || '';
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('/api/login', { email, password });
+      const res = await axios.post(`${API_URL}/api/login`, { email, password });
       localStorage.setItem('token', res.data.token);
       onLogin();
     } catch (error) {
@@ -21,7 +23,7 @@ function Login({ onLogin, onSwitchToSignup }) {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = 'http://localhost:5000/api/auth/google';
+    window.location.href = `${API_URL}/api/auth/google`;
   };
 
   return (
